@@ -22,8 +22,4 @@ class Point {
       z *= mag;
     }
   }
-  
-  String toStrObj(){
-   return "v " + x + " " + y + " " + z ;
-  }
 }

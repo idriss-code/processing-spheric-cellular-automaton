@@ -17,8 +17,4 @@ class Triangle {
     vertex(c.x*100, c.y*100, c.z*100);
     endShape(CLOSE);
   }
-
-  String toStrObj() {
-    return "f " + a.index + " " + b.index + " " + c.index ;
-  }
 }

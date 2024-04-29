@@ -1,7 +1,7 @@
 import peasy.PeasyCam;
 PeasyCam cam;
 
-int NB_ITERATION = 0;
+int NB_ITERATION = 5;
 
 
 int curent_index = 0;
@@ -34,14 +34,12 @@ void setup() {
 
   for (int i = 0; i < NB_ITERATION; i++) {
     new_triangles = new ArrayList<Triangle>();
+    HashMap<String, Point> hm = new HashMap<String, Point>();
     for (Triangle tri : triangles) {
-      Point a = new Point((tri.a.x + tri.b.x)/2, (tri.a.y + tri.b.y)/2, (tri.a.z + tri.b.z)/2, ++curent_index);
-      Point b = new Point((tri.b.x + tri.c.x)/2, (tri.b.y + tri.c.y)/2, (tri.b.z + tri.c.z)/2, ++curent_index);
-      Point c = new Point((tri.c.x + tri.a.x)/2, (tri.c.y + tri.a.y)/2, (tri.c.z + tri.a.z)/2, ++curent_index);
 
-      a.normalize();
-      b.normalize();
-      c.normalize();
+      Point a = getMiddle(tri.a, tri.b, hm);
+      Point b = getMiddle(tri.b, tri.c, hm);
+      Point c = getMiddle(tri.c, tri.a, hm);
 
       points.add(a);
       points.add(b);
@@ -55,20 +53,17 @@ void setup() {
 
     triangles = new_triangles;
   }
+  
+}
 
-  StringList strlist = new StringList();
-
-  for (Point pt : points) {
-    strlist.append(pt.toStrObj());
+Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
+  String key = String.valueOf(a.index) + "-" +  String.valueOf(b.index);
+  Point point = hm.get(key);
+  if (point == null) {
+    point = new Point((a.x + b.x)/2, (a.y + b.y)/2, (a.z + b.z)/2, ++curent_index);
+    hm.put(key, point);
   }
-
-  for (Triangle tri : triangles) {
-    strlist.append(tri.toStrObj());
-  }
-
-
-
-  saveStrings("sphere.obj", strlist.toArray());
+  return point;
 }
 
 void draw() {
