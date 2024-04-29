@@ -1,13 +1,15 @@
 import peasy.PeasyCam;
 PeasyCam cam;
 
-int NB_ITERATION = 5;
+int NB_ITERATION = 3;
 
 
 int curent_index = 0;
 ArrayList<Point> points;
 ArrayList<Triangle> triangles;
 ArrayList<Triangle> new_triangles;
+
+long previous;
 
 void setup() {
   size(800, 600, P3D);
@@ -53,7 +55,11 @@ void setup() {
 
     triangles = new_triangles;
   }
-  
+
+  for (Point pt : points) {
+    //pt.normalize();
+  }
+  previous = millis();
 }
 
 Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
@@ -61,12 +67,22 @@ Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
   Point point = hm.get(key);
   if (point == null) {
     point = new Point((a.x + b.x)/2, (a.y + b.y)/2, (a.z + b.z)/2, ++curent_index);
+    point.normalize();
     hm.put(key, point);
   }
   return point;
 }
 
+void update() {
+  println("update" + millis());
+}
+
 void draw() {
+  if (millis() - previous > 1000) {
+    previous = millis();
+    update();
+  }
+
   background(125);
 
   pushMatrix();
