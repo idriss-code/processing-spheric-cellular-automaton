@@ -5,6 +5,7 @@ class Triangle {
   Point c;
 
   int state = 0;
+  int newState = 0;
 
   ArrayList<Triangle> closeNeighbours = null;
   ArrayList<Triangle> distantNeighbours = null;
@@ -39,6 +40,16 @@ class Triangle {
       closeNeighbours = getNeighbours(triangles,2);
     }
     return closeNeighbours;
+  }
+
+  int getCountCloseNeighbourByState(ArrayList<Triangle> triangles, int searchState) {
+    int count = 0;
+    for (Triangle t : getCloseNeighbours(triangles)) {
+      if(t.state == searchState) {
+        count++;
+      }
+    }
+    return count;
   }
 
   ArrayList<Triangle> getDistantNeighbours(ArrayList<Triangle> triangles) {

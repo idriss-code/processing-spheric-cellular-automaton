@@ -85,12 +85,14 @@ void update() {
 
   for (Triangle tri : triangles) {
     if(tri.state == 1) {
-      println("top");
       for (Triangle neig : tri.getCloseNeighbours(triangles)) {
-        println("toop");
-        neig.state = 1;
+        neig.newState = 1;
       }
     }
+  }
+
+  for (Triangle tri : triangles) {
+    tri.state = tri.newState;
   }
 
 }
