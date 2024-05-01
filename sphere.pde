@@ -55,7 +55,9 @@ void setup() {
     triangles = new_triangles;
   }
 
-  triangles.get(0).state = 1;
+  for (Triangle tri : triangles) {
+    tri.state = int(random(0, 2));
+  }
 
   for (Point pt : points) {
     //pt.normalize();
@@ -84,11 +86,9 @@ void update() {
   println("update" + millis());
 
   for (Triangle tri : triangles) {
-    if(tri.state == 1) {
-      for (Triangle neig : tri.getCloseNeighbours(triangles)) {
-        neig.newState = 1;
-      }
-    }
+
+    tri.newState = tri.getCountCloseNeighbourByState(triangles,1) > 1 ? 1 : 0;
+    
   }
 
   for (Triangle tri : triangles) {
