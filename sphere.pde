@@ -3,7 +3,6 @@ PeasyCam cam;
 
 int NB_ITERATION = 3;
 
-
 int curent_index = 0;
 ArrayList<Point> points;
 ArrayList<Triangle> triangles;
@@ -56,6 +55,8 @@ void setup() {
     triangles = new_triangles;
   }
 
+  triangles.get(0).state = 1;
+
   for (Point pt : points) {
     //pt.normalize();
   }
@@ -63,7 +64,13 @@ void setup() {
 }
 
 Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
-  String key = String.valueOf(a.index) + "-" +  String.valueOf(b.index);
+  String key;
+  if(a.index > b.index) {
+    key = String.valueOf(a.index) + "-" +  String.valueOf(b.index);
+  } else {
+    key = String.valueOf(b.index) + "-" +  String.valueOf(a.index);
+  }
+
   Point point = hm.get(key);
   if (point == null) {
     point = new Point((a.x + b.x)/2, (a.y + b.y)/2, (a.z + b.z)/2, ++curent_index);
@@ -75,6 +82,17 @@ Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
 
 void update() {
   println("update" + millis());
+
+  for (Triangle tri : triangles) {
+    if(tri.state == 1) {
+      println("top");
+      for (Triangle neig : tri.getCloseNeighbours(triangles)) {
+        println("toop");
+        neig.state = 1;
+      }
+    }
+  }
+
 }
 
 void draw() {
