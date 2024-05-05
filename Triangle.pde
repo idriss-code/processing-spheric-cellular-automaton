@@ -42,21 +42,32 @@ class Triangle {
     return closeNeighbours;
   }
 
-  int getCountCloseNeighbourByState(ArrayList<Triangle> triangles, int searchState) {
-    int count = 0;
-    for (Triangle t : getCloseNeighbours(triangles)) {
-      if(t.state == searchState) {
-        count++;
-      }
-    }
-    return count;
-  }
-
   ArrayList<Triangle> getDistantNeighbours(ArrayList<Triangle> triangles) {
     if(distantNeighbours == null) {
       distantNeighbours = getNeighbours(triangles,1);
     }
     return distantNeighbours;
+  }
+
+  int getCountNeighbourByState(ArrayList<Triangle> triangles, int searchState, Dist dist) {
+    int count = 0;
+    ArrayList<Triangle> list;
+
+    if(dist == Dist.CLOSE) {
+      list = getCloseNeighbours(triangles);
+    }
+    else if (dist == Dist.DISTANT) {
+      list = getDistantNeighbours(triangles);
+    } else {
+      return getCountNeighbourByState(triangles,searchState,Dist.DISTANT) + getCountNeighbourByState(triangles,searchState,Dist.CLOSE);
+    }
+
+    for (Triangle t : list) {
+      if(t.state == searchState) {
+        count++;
+      }
+    }
+    return count;
   }
 
   ArrayList<Point> getAllPoints() {
@@ -79,4 +90,10 @@ class Triangle {
     return count;
   }
 
+}
+
+enum Dist {
+  CLOSE,
+  DISTANT,
+  ALL,
 }

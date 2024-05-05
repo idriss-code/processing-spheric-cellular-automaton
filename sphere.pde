@@ -1,7 +1,7 @@
 import peasy.PeasyCam;
 PeasyCam cam;
 
-int NB_ITERATION = 3;
+int NB_ITERATION = 5;
 
 int curent_index = 0;
 ArrayList<Point> points;
@@ -86,15 +86,26 @@ void update() {
   println("update" + millis());
 
   for (Triangle tri : triangles) {
-
-    tri.newState = tri.getCountCloseNeighbourByState(triangles,1) > 1 ? 1 : 0;
-    
+    algo(tri);
   }
 
   for (Triangle tri : triangles) {
     tri.state = tri.newState;
   }
 
+}
+
+void algo(Triangle triangle) {
+  int coeff = 2;
+  int closeNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.CLOSE);
+  int distantNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.DISTANT);
+  int NeighbourOn = closeNeighbourOn * coeff + distantNeighbourOn;
+
+  if(triangle.state == 1) {
+    triangle.newState = NeighbourOn >= 7 ? 1 : 0;
+  } else {
+    triangle.newState = NeighbourOn >= 8 ? 1 : 0;
+  }
 }
 
 void draw() {
