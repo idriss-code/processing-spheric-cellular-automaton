@@ -1,4 +1,7 @@
 import peasy.PeasyCam;
+import controlP5.*;
+
+ControlP5 cp5;
 PeasyCam cam;
 
 int NB_ITERATION = 5;
@@ -7,14 +10,45 @@ int curent_index = 0;
 ArrayList<Point> points;
 ArrayList<Triangle> triangles;
 ArrayList<Triangle> new_triangles;
+long previousTime;
 
-long previous;
+enum State {
+  SETUP,
+  RUN,
+}
+
+State state = State.SETUP;
 
 void setup() {
   size(800, 600, P3D);
-  cam = new PeasyCam(this, width/2, height/2, -300, 400);
   //noFill();
   strokeWeight(1);
+  initSetup();
+}
+
+void initSetup() {
+  cp5 = new ControlP5(this);
+  int buttonWidth = 200;
+  int buttonHeight = 50;
+  cp5.addButton("run")
+  .setPosition(width - buttonWidth,height - buttonHeight)
+  .setSize(buttonWidth,buttonHeight);
+
+  cp5.addSlider("NB_ITERATION")
+  .setSize(255,30)
+  .setRange(0,10);
+}
+
+// button run
+
+void run() {
+  state = State.RUN;
+  cp5.setAutoDraw(false);
+  initSphere();
+}
+
+void initSphere() {
+  cam = new PeasyCam(this, width/2, height/2, -300, 400);
   points = new ArrayList<Point>();
   points.add(new Point(1, 0, 0, ++curent_index));
   points.add(new Point(-1, 0, 0, ++curent_index));
@@ -62,7 +96,7 @@ void setup() {
   for (Point pt : points) {
     //pt.normalize();
   }
-  previous = millis();
+  previousTime = millis();
 }
 
 Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
@@ -109,19 +143,21 @@ void algo(Triangle triangle) {
 }
 
 void draw() {
-  if (millis() - previous > 1000) {
-    previous = millis();
-    update();
+  if(state == State.RUN) {
+    if (millis() - previousTime > 1000) {
+      previousTime = millis();
+      update();
+    }
+
+    background(125);
+
+    pushMatrix();
+    translate(width/2, height/2, -300);
+
+    for (Triangle tri : triangles) {
+      tri.draw();
+    }
+
+    popMatrix();
   }
-
-  background(125);
-
-  pushMatrix();
-  translate(width/2, height/2, -300);
-
-  for (Triangle tri : triangles) {
-    tri.draw();
-  }
-
-  popMatrix();
 }
