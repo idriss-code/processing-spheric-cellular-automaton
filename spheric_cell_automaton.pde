@@ -12,6 +12,9 @@ ArrayList<Triangle> triangles;
 ArrayList<Triangle> new_triangles;
 long previousTime;
 
+int algo = 0;
+int startPos = 0;
+
 enum State {
   SETUP,
   RUN,
@@ -37,6 +40,15 @@ void initSetup() {
   cp5.addSlider("NB_ITERATION")
   .setSize(255,30)
   .setRange(0,10);
+
+  cp5.addDropdownList("algo")
+  .addItem("island",0)
+  .addItem("seed",1);
+
+  cp5.addDropdownList("startPos")
+  .setPosition(0,100)
+  .addItem("random",0)
+  .addItem("solo",1);
 }
 
 // button run
@@ -89,14 +101,34 @@ void initSphere() {
     triangles = new_triangles;
   }
 
-  for (Triangle tri : triangles) {
-    tri.state = int(random(0, 2));
+  switch(startPos) {
+    case 0:
+    randomStart();
+    break;
+    case 1:
+    soloStart();
+    break;
   }
 
   for (Point pt : points) {
     //pt.normalize();
   }
   previousTime = millis();
+}
+
+void randomStart() {
+  println("randomStart");
+  for (Triangle tri : triangles) {
+    tri.state = int(random(0, 2));
+  }
+}
+
+void soloStart() {
+  println("soloStart");
+  for (Triangle tri : triangles) {
+    tri.state = 0;
+  }
+  triangles.get(triangles.size() - 1).state = 1;
 }
 
 Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
@@ -120,7 +152,15 @@ void update() {
   println("update" + millis());
 
   for (Triangle tri : triangles) {
-    algo(tri);
+
+    switch(algo) {
+      case 0:
+      algo0(tri);
+      break;
+      case 1:
+      algo1(tri);
+      break;
+    }
   }
 
   for (Triangle tri : triangles) {
@@ -129,7 +169,8 @@ void update() {
 
 }
 
-void algo(Triangle triangle) {
+void algo0(Triangle triangle) {
+  //println("algo0");
   int coeff = 2;
   int closeNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.CLOSE);
   int distantNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.DISTANT);
@@ -142,14 +183,19 @@ void algo(Triangle triangle) {
   }
 }
 
+void algo1(Triangle triangle) {
+  //println("algo1");
+  int closeNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.CLOSE);
+  triangle.newState = closeNeighbourOn == 1 ? 1 : 0;
+}
+
 void draw() {
+  background(125);
   if(state == State.RUN) {
     if (millis() - previousTime > 1000) {
       previousTime = millis();
       update();
     }
-
-    background(125);
 
     pushMatrix();
     translate(width/2, height/2, -300);
