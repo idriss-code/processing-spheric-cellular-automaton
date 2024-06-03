@@ -31,9 +31,9 @@ void initSetup() {
   int buttonWidth = 200;
   int buttonHeight = 50;
   cp5.addButton("run") .setPosition(width - buttonWidth,height - buttonHeight) .setSize(buttonWidth,buttonHeight);
-  cp5.addSlider("NB_ITERATION") .setSize(255,30) .setRange(0,10);
-  cp5.addDropdownList("algo") .addItem("Islands",0) .addItem("Seeds",1) .addItem("Brian's Brain",2);;
-  cp5.addDropdownList("startPos") .setPosition(0,100) .addItem("random",0) .addItem("solo",1);
+  cp5.addSlider("NB_ITERATION").setPosition(200,100).setSize(255,30).setRange(0,10);
+  cp5.addDropdownList("algo").addItem("Islands",0).addItem("Seeds",1).addItem("Brian's Brain",2);;
+  cp5.addDropdownList("startPos").setPosition(0,100).addItem("random",0).addItem("solo",1);
 }
 
 // button run
@@ -98,7 +98,7 @@ void initSphere() {
 void randomStart() {
   println("randomStart");
   for(Triangle tri : triangles) {
-    tri.state = int(random(0, 3));
+    tri.state = int(random(0, 2));
   }
 }
 
