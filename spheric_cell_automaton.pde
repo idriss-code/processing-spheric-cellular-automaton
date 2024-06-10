@@ -11,9 +11,7 @@ ArrayList<Point> points;
 ArrayList<Triangle> triangles;
 ArrayList<Triangle> new_triangles;
 long previousTime;
-
 int algo = 0;
-int startPos = 0;
 
 enum State {
   SETUP, RUN, }
@@ -32,8 +30,7 @@ void initSetup() {
   int buttonHeight = 50;
   cp5.addButton("run") .setPosition(width - buttonWidth,height - buttonHeight) .setSize(buttonWidth,buttonHeight);
   cp5.addSlider("NB_ITERATION").setPosition(200,100).setSize(255,30).setRange(0,10);
-  cp5.addDropdownList("algo").addItem("Islands",0).addItem("Seeds",1).addItem("Brian's Brain",2);;
-  cp5.addDropdownList("startPos").setPosition(0,100).addItem("random",0).addItem("solo",1);
+  cp5.addDropdownList("algo").addItem("Islands",0).addItem("Seeds",1).addItem("Brian's Brain",2).addItem("game of life",3);
 }
 
 // button run
@@ -83,10 +80,14 @@ void initSphere() {
     triangles = new_triangles;
   }
 
-  switch(startPos) {
+  switch(algo) {
     case 0: randomStart();
     break;
     case 1: soloStart();
+    break;
+    case 2: soloStart();
+    break;
+    case 3: randomStart();
     break;
   }
   for(Point pt : points) {
@@ -127,15 +128,15 @@ Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
 
 void update() {
   println("update" + millis());
-
   for(Triangle tri : triangles) {
-
     switch(algo) {
       case 0: algo0(tri);
       break;
       case 1: algo1(tri);
       break;
       case 2: algo2(tri);
+      break;
+      case 3: algo3(tri);
       break;
     }
   }
@@ -149,12 +150,7 @@ void algo0(Triangle triangle) {
   int closeNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.CLOSE);
   int distantNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.DISTANT);
   int NeighbourOn = closeNeighbourOn * coeff + distantNeighbourOn;
-
-  if (triangle.state == 1) {
-    triangle.newState = NeighbourOn >= 7 ? 1 : 0;
-  } else {
-    triangle.newState = NeighbourOn >= 8 ? 1 : 0;
-  }
+  triangle.newState = NeighbourOn >= 8 ? 1 : 0;
 }
 
 void algo1(Triangle triangle) {
@@ -171,6 +167,19 @@ void algo2(Triangle triangle) {
     triangle.newState = 2;
   } else {
     triangle.newState = 0;
+  }
+}
+
+void algo3(Triangle triangle) {
+  int coeff = 2;
+  int closeNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.CLOSE);
+  int distantNeighbourOn = triangle.getCountNeighbourByState(triangles,1,Dist.DISTANT);
+  int NeighbourOn = closeNeighbourOn * coeff + distantNeighbourOn;
+
+  if (triangle.state == 1) {
+    triangle.newState = NeighbourOn == 2 && NeighbourOn == 3 ? 1 : 0;
+  } else {
+    triangle.newState = NeighbourOn == 3 ? 1 : 0;
   }
 }
 
