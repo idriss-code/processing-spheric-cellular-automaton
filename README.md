@@ -30,6 +30,8 @@ On projette les points sur une sphère par normalisation des vecteurs.
 4 algorithmes sont disponibles, inspirés d'algorithme connu
 
 Islands
-Seeds https://en.wikipedia.org/wiki/Seeds_(cellular_automaton)
-Brian's Brain https://en.wikipedia.org/wiki/Brian%27s_Brain
-game of life https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+[Seeds](https://en.wikipedia.org/wiki/Seeds_(cellular_automaton))
+[Brian's](https://en.wikipedia.org/wiki/Brian%27s_Brain)
+[game of life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+
+le depart se fait soit par une unique cellule allumé ou un tirage au sort de l'état des cellules

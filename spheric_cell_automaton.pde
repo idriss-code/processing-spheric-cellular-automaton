@@ -12,10 +12,15 @@ ArrayList<Triangle> triangles;
 ArrayList<Triangle> new_triangles;
 long previousTime;
 int algo = 0;
+boolean spherical = true;
 
 enum State {
   SETUP, RUN, }
 State state = State.SETUP;
+
+float x = 0;
+float y = 0;
+float z = 0;
 
 void setup() {
   size(800, 600, P3D);
@@ -29,11 +34,11 @@ void initSetup() {
   int buttonWidth = 200;
   int buttonHeight = 50;
   cp5.addButton("run") .setPosition(width - buttonWidth,height - buttonHeight) .setSize(buttonWidth,buttonHeight);
-  cp5.addSlider("NB_ITERATION").setPosition(200,100).setSize(255,30).setRange(0,10);
+  cp5.addSlider("NB_ITERATION").setPosition(20,100).setSize(255,30).setRange(0,10);
   cp5.addDropdownList("algo").addItem("Islands",0).addItem("Seeds",1).addItem("Brian's Brain",2).addItem("game of life",3);
+  cp5.addToggle("spherical").setPosition(20, 200);
 }
 
-// button run
 void run() {
   state = State.RUN;
   cp5.setAutoDraw(false);
@@ -41,14 +46,14 @@ void run() {
 }
 
 void initSphere() {
-  cam = new PeasyCam(this, width/2, height/2, -300, 400);
+  cam = new PeasyCam(this, x, y, z, 400);
   points = new ArrayList<Point>();
-  points.add(new Point(1, 0, 0, ++curent_index));
   points.add(new Point(-1, 0, 0, ++curent_index));
-  points.add(new Point(0, 1, 0, ++curent_index));
+  points.add(new Point(1, 0, 0, ++curent_index));
   points.add(new Point(0, -1, 0, ++curent_index));
-  points.add(new Point(0, 0, 1, ++curent_index));
+  points.add(new Point(0, 1, 0, ++curent_index));
   points.add(new Point(0, 0, -1, ++curent_index));
+  points.add(new Point(0, 0, 1, ++curent_index));
 
   triangles = new ArrayList<Triangle>();
   triangles.add(new Triangle(points.get(0), points.get(2), points.get(4)));
@@ -120,7 +125,10 @@ Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
   Point point = hm.get(key);
   if (point == null) {
     point = new Point((a.x + b.x)/2,(a.y + b.y)/2,(a.z + b.z)/2, ++curent_index);
-    point.normalize();
+
+    if (spherical) {
+      point.normalize();
+    }
     hm.put(key, point);
   }
   return point;
@@ -129,6 +137,7 @@ Point getMiddle(Point a, Point b, HashMap<String, Point> hm) {
 void update() {
   println("update" + millis());
   for(Triangle tri : triangles) {
+
     switch(algo) {
       case 0: algo0(tri);
       break;
@@ -191,7 +200,7 @@ void draw() {
       update();
     }
     pushMatrix();
-    translate(width/2, height/2, -300);
+    translate(x, y, z);
 
     for(Triangle tri : triangles) {
       tri.draw();
